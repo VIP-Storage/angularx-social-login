@@ -31,6 +31,15 @@ export interface GoogleInitOptions {
    * 'select_account' Prompt the user to select an account.
    */
   prompt? : '' | 'none' | 'consent' | 'select_account';
+
+  /**
+   * Optional, defaults to 'popup'
+   * UX mode specified by Google
+   * Possible values are:
+   * popup - Show the login form in a popup window
+   * redirect - Show the login form in the same window
+   */
+  uxMode?: 'popup' | 'redirect'
 }
 
 const defaultInitOptions: GoogleInitOptions = {
@@ -77,7 +86,8 @@ export class GoogleLoginProvider extends BaseLoginProvider {
                 this._socialUser.next(socialUser);
               },
               prompt_parent_id: this.initOptions?.prompt_parent_id,
-              itp_support: this.initOptions.oneTapEnabled
+              itp_support: this.initOptions.oneTapEnabled,
+              ux_mode: this.initOptions.uxMode || 'popup'
             });
 
             if (this.initOptions.oneTapEnabled) {
