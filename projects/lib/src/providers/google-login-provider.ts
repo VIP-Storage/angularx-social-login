@@ -34,12 +34,29 @@ export interface GoogleInitOptions {
 
   /**
    * Optional, defaults to 'popup'
-   * UX mode specified by Google
+   * UX mode specified by Google, if using 'redirect' you must have a backend server setup to handle the request
    * Possible values are:
    * popup - Show the login form in a popup window
    * redirect - Show the login form in the same window
    */
   uxMode?: 'popup' | 'redirect'
+
+  /**
+   * Sets the title and message in the One Tap prompt
+   * Available contexts:
+   *   signin "Sign in with Google"
+   *   signup "Sign up with Google"
+   *   use    "Use with Google"
+   */
+  context?: 'signin' | 'signup' | 'use';
+
+  /**
+   * The URL of your login endpoint.
+   * Defaults to the URI of the current page, or the value you
+   * specify.
+   * Only used when ux_mode: "redirect" is set.
+   */
+  loginURI?: string;
 }
 
 const defaultInitOptions: GoogleInitOptions = {
@@ -87,7 +104,9 @@ export class GoogleLoginProvider extends BaseLoginProvider {
               },
               prompt_parent_id: this.initOptions?.prompt_parent_id,
               itp_support: this.initOptions.oneTapEnabled,
-              ux_mode: this.initOptions.uxMode || 'popup'
+              ux_mode: this.initOptions.uxMode || 'popup',
+              context: this.initOptions.context || 'use',
+              login_uri: this.initOptions.loginURI,
             });
 
             if (this.initOptions.oneTapEnabled) {
