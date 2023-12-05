@@ -87,6 +87,14 @@ export interface GoogleInitOptions {
    * shared cookie is used.
    */
   stateCookieDomain?: string;
+
+  /**
+   * The origins that are allowed to embed the intermediate iframe.
+   * One Tap will run in the intermediate iframe mode if this field
+   * presents.
+   */
+  allowedParentOrigin?: string | string[];
+
 }
 
 const defaultInitOptions: GoogleInitOptions = {
@@ -139,6 +147,7 @@ export class GoogleLoginProvider extends BaseLoginProvider {
               login_uri: this.initOptions.loginURI,
               cancel_on_tap_outside: this.initOptions.cancelOnTapOutside,
               state_cookie_domain: this.initOptions.stateCookieDomain,
+              allowed_parent_origin: this.initOptions.allowedParentOrigin,
             });
 
             if (this.initOptions.oneTapEnabled) {
