@@ -16,7 +16,7 @@ export interface GoogleInitOptions {
  /**
    * This attribute sets the DOM ID of the container element. If it's not set, the One Tap prompt is displayed in the top-right corner of the window.
    */
-  prompt_parent_id?: string;
+  promptParentID?: string;
 
   /**
    * Optional, defaults to 'select_account'.
@@ -57,6 +57,36 @@ export interface GoogleInitOptions {
    * Only used when ux_mode: "redirect" is set.
    */
   loginURI?: string;
+
+  /**
+   * Optional.
+   * If your application knows which user should authorize the
+   * request, it can use this property to provide a hint to Google.
+   * The email address for the target user. For more information, see
+   * the login_hint field in the OpenID Connect docs.
+   */
+  hint?: string;
+
+  /**
+   * Optional.
+   * If your application knows the Workspace domain the user belongs
+   * to, use this to provide a hint to Google. For more information,
+   * see the hd field in the OpenID Connect docs.
+   */
+  hostedDomain?: string;
+
+  /**
+   * Cancels the prompt if the user clicks outside the prompt.
+   * Default value is true.
+   */
+  cancelOnTapOutside?: boolean;
+
+  /**
+   * If you need to call One Tap in the parent domain and its
+   * subdomains, pass the parent domain to this field so that a single
+   * shared cookie is used.
+   */
+  stateCookieDomain?: string;
 }
 
 const defaultInitOptions: GoogleInitOptions = {
@@ -102,11 +132,13 @@ export class GoogleLoginProvider extends BaseLoginProvider {
                 const socialUser = this.createSocialUser(credential);
                 this._socialUser.next(socialUser);
               },
-              prompt_parent_id: this.initOptions?.prompt_parent_id,
+              prompt_parent_id: this.initOptions?.promptParentID,
               itp_support: this.initOptions.oneTapEnabled,
               ux_mode: this.initOptions.uxMode || 'popup',
               context: this.initOptions.context || 'use',
               login_uri: this.initOptions.loginURI,
+              cancel_on_tap_outside: this.initOptions.cancelOnTapOutside,
+              state_cookie_domain: this.initOptions.stateCookieDomain,
             });
 
             if (this.initOptions.oneTapEnabled) {
@@ -124,6 +156,8 @@ export class GoogleLoginProvider extends BaseLoginProvider {
               this._tokenClient = google.accounts.oauth2.initTokenClient({
                 client_id: this.clientId,
                 scope,
+                hint: this.initOptions.hint,
+                hosted_domain: this.initOptions.hostedDomain,
                 prompt : this.initOptions.prompt,
                 callback: (tokenResponse) => {
                   if (tokenResponse.error) {
