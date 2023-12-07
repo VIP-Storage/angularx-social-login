@@ -140,7 +140,7 @@ export class GoogleLoginProvider extends BaseLoginProvider {
                 const socialUser = this.createSocialUser(credential);
                 this._socialUser.next(socialUser);
               },
-              prompt_parent_id: this.initOptions?.promptParentID,
+              prompt_parent_id: this.initOptions.promptParentID,
               itp_support: this.initOptions.oneTapEnabled,
               ux_mode: this.initOptions.uxMode || 'popup',
               context: this.initOptions.context || 'use',
@@ -149,6 +149,7 @@ export class GoogleLoginProvider extends BaseLoginProvider {
               state_cookie_domain: this.initOptions.stateCookieDomain,
               allowed_parent_origin: this.initOptions.allowedParentOrigin,
             });
+
 
             if (this.initOptions.oneTapEnabled) {
               this._socialUser
