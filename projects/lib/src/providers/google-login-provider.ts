@@ -170,7 +170,9 @@ export class GoogleLoginProvider extends BaseLoginProvider {
                 hint: this.initOptions.hint,
                 hosted_domain: this.initOptions.hostedDomain,
                 prompt : this.initOptions.prompt,
-
+                error_callback: (error) => {
+                  this._accessToken.error(error);
+                },
                 callback: (tokenResponse) => {
                   if (tokenResponse.error) {
                     this._accessToken.error({
