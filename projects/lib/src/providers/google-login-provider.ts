@@ -162,12 +162,14 @@ export class GoogleLoginProvider extends BaseLoginProvider {
                   ? this.initOptions.scopes.filter((s) => s).join(' ')
                   : this.initOptions.scopes;
 
+
               this._tokenClient = google.accounts.oauth2.initTokenClient({
                 client_id: this.clientId,
                 scope,
                 hint: this.initOptions.hint,
                 hosted_domain: this.initOptions.hostedDomain,
                 prompt : this.initOptions.prompt,
+
                 callback: (tokenResponse) => {
                   if (tokenResponse.error) {
                     this._accessToken.error({
@@ -231,16 +233,16 @@ export class GoogleLoginProvider extends BaseLoginProvider {
     });
   }
 
-  revokeAccessToken(): Promise<void> {
+  revokeAccessToken(accessToken?: string): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this._tokenClient) {
         reject(
           'No token client was instantiated, you should specify some scopes.'
         );
-      } else if (!this._accessToken.value) {
+      } else if (!this._accessToken.value && !accessToken) {
         reject('No access token to revoke');
       } else {
-        google.accounts.oauth2.revoke(this._accessToken.value, () => {
+        google.accounts.oauth2.revoke(this._accessToken.value || accessToken, () => {
           this._accessToken.next(null);
           resolve();
         });

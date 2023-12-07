@@ -171,7 +171,7 @@ export class SocialAuthService {
     });
   }
 
-  refreshAccessToken(providerId: string): Promise<void> {
+  refreshAccessToken(providerId: string, existingToken?: string): Promise<void> {
     return new Promise((resolve, reject) => {
       if (!this.initialized) {
         reject(SocialAuthService.ERR_NOT_INITIALIZED);
