@@ -11,6 +11,7 @@ export interface SocialAuthServiceConfig {
   autoLogin?: boolean;
   providers: { id: string; provider: LoginProvider | Type<LoginProvider> }[];
   onError?: (error: any) => any;
+  onProviderError?: (error: any) => any;
 }
 
 /**
@@ -180,12 +181,27 @@ export class SocialAuthService {
       } else {
         const providerObject = this.providers.get(providerId);
         if (providerObject instanceof GoogleLoginProvider) {
-          providerObject.revokeAccessToken().then(resolve).catch(reject);
+          providerObject.revokeAccessToken(existingToken).then(resolve).catch(reject);
         } else {
           reject(SocialAuthService.ERR_LOGIN_PROVIDER_NOT_FOUND);
         }
       }
     });
+  }
+
+  /**
+   * A method used to handle provider errors
+   * @param providerId
+   */
+  handleProviderErrors(providerId: string): Observable<any> {
+    return new Observable(subscriber => {
+      const providerObject = this.providers.get(providerId);
+      if (providerObject instanceof GoogleLoginProvider) {
+        providerObject.tokenClientError.subscribe(subscriber);
+      } else {
+       subscriber.error(SocialAuthService.ERR_LOGIN_PROVIDER_NOT_FOUND);
+      }
+    })
   }
 
   /**

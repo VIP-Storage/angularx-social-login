@@ -104,6 +104,7 @@ const defaultInitOptions: GoogleInitOptions = {
 export class GoogleLoginProvider extends BaseLoginProvider {
   public static readonly PROVIDER_ID: string = 'GOOGLE';
 
+  public readonly tokenClientError = new EventEmitter<any>();
   public readonly changeUser = new EventEmitter<SocialUser | null>();
 
   private readonly _socialUser = new BehaviorSubject<SocialUser | null>(null);
@@ -171,6 +172,7 @@ export class GoogleLoginProvider extends BaseLoginProvider {
                 hosted_domain: this.initOptions.hostedDomain,
                 prompt : this.initOptions.prompt,
                 error_callback: (error) => {
+                  this.tokenClientError.emit(error);
                   this._accessToken.error(error);
                 },
                 callback: (tokenResponse) => {
