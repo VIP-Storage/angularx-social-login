@@ -9,6 +9,13 @@ export interface GoogleInitOptions {
    * enables the One Tap mechanism, and makes auto-login possible
    */
   oneTapEnabled?: boolean;
+
+  /**
+   * Allow the browser to control user sign-in prompts and mediate the
+   * sign-in flow between your website and Google. Defaults to false.
+   */
+  useFedCMForPrompt?: boolean;
+
   /**
    * list of permission scopes to grant in case we request an access token
    */
@@ -149,6 +156,7 @@ export class GoogleLoginProvider extends BaseLoginProvider {
               cancel_on_tap_outside: this.initOptions.cancelOnTapOutside,
               state_cookie_domain: this.initOptions.stateCookieDomain,
               allowed_parent_origin: this.initOptions.allowedParentOrigin,
+              use_fedcm_for_prompt: this.initOptions.useFedCMForPrompt,
             });
 
 

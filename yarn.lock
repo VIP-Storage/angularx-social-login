@@ -1746,10 +1746,10 @@
     "@types/qs" "*"
     "@types/serve-static" "*"
 
-"@types/google.accounts@^0.0.7":
-  version "0.0.7"
-  resolved "https://registry.npmjs.org/@types/google.accounts/-/google.accounts-0.0.7.tgz"
-  integrity sha512-AAA2+/s/Oa9ETgaWY6JM2P3h8RiQ1FkdyI7QYKMY3hbIkwGbjEBLX0L6FpazVxHnq68ruDyl8Fi5v0tEwSyfeg==
+"@types/google.accounts@^0.0.14":
+  version "0.0.14"
+  resolved "https://registry.npmjs.org/@types/google.accounts/-/google.accounts-0.0.14.tgz"
+  integrity sha512-HqIVkVzpiLWhlajhQQd4rIV7czanFvXblJI2J1fSrL+VKQuQwwZ63m35D/mI0flsqKE6p/hNrAG0Yn4FD6JvNA==
 
 "@types/http-proxy@^1.17.8":
   version "1.17.10"
