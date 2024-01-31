@@ -1,7 +1,7 @@
 import { BaseLoginProvider } from '../entities/base-login-provider';
 import { SocialUser } from '../entities/social-user';
 import { EventEmitter } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, map, ReplaySubject } from 'rxjs';
 import { filter, skip, take } from 'rxjs/operators';
 
 export interface GoogleInitOptions {
@@ -114,6 +114,7 @@ export class GoogleLoginProvider extends BaseLoginProvider {
   public readonly tokenClientError = new EventEmitter<any>();
   public readonly changeUser = new EventEmitter<SocialUser | null>();
 
+  private readonly _initialized = new ReplaySubject<boolean>();
   private readonly _socialUser = new BehaviorSubject<SocialUser | null>(null);
   private readonly _accessToken = new BehaviorSubject<string | null>(null);
   private readonly _receivedAccessToken = new EventEmitter<string>();
@@ -159,6 +160,7 @@ export class GoogleLoginProvider extends BaseLoginProvider {
               use_fedcm_for_prompt: this.initOptions.useFedCMForPrompt,
             });
 
+            this._initialized.next(true);
 
             if (this.initOptions.oneTapEnabled) {
               this._socialUser
@@ -271,7 +273,11 @@ export class GoogleLoginProvider extends BaseLoginProvider {
   }
 
   dismissPrompt() {
-    return google.accounts.id.cancel();
+    return this._initialized.pipe(
+      map(() => {
+        return google.accounts.id.cancel();
+      })
+    )
   }
 
   async signOut(): Promise<void> {

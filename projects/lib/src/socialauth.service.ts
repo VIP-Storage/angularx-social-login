@@ -1,5 +1,5 @@
 import { Inject, Injectable, Injector, NgZone, Type } from '@angular/core';
-import { AsyncSubject, isObservable, Observable, ReplaySubject } from 'rxjs';
+import {AsyncSubject, firstValueFrom, isObservable, Observable, ReplaySubject} from 'rxjs';
 import { LoginProvider } from './entities/login-provider';
 import { SocialUser } from './entities/social-user';
 import { GoogleLoginProvider } from './providers/google-login-provider';
@@ -160,15 +160,14 @@ export class SocialAuthService {
    */
   dismissAuthPrompt(providerId: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (!this.initialized) {
-        reject(SocialAuthService.ERR_NOT_INITIALIZED);
-      } else if (providerId !== GoogleLoginProvider.PROVIDER_ID) {
+      if (providerId !== GoogleLoginProvider.PROVIDER_ID) {
         reject(SocialAuthService.ERR_NOT_SUPPORTED_FOR_DISMISSING_PROMPT);
       } else {
         const providerObject = this.providers.get(providerId);
         if (providerObject instanceof GoogleLoginProvider) {
-          providerObject.dismissPrompt();
-          resolve()
+          providerObject.dismissPrompt().subscribe(() => {
+            resolve();
+          });
         } else {
           reject(SocialAuthService.ERR_LOGIN_PROVIDER_NOT_FOUND);
         }
