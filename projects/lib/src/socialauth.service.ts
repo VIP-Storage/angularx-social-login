@@ -160,7 +160,9 @@ export class SocialAuthService {
    */
   dismissAuthPrompt(providerId: string): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (providerId !== GoogleLoginProvider.PROVIDER_ID) {
+      if (!this.initialized) {
+        reject(SocialAuthService.ERR_NOT_INITIALIZED);
+      } else if (providerId !== GoogleLoginProvider.PROVIDER_ID) {
         reject(SocialAuthService.ERR_NOT_SUPPORTED_FOR_DISMISSING_PROMPT);
       } else {
         const providerObject = this.providers.get(providerId);
