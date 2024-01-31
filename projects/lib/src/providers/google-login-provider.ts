@@ -20,10 +20,6 @@ export interface GoogleInitOptions {
    * list of permission scopes to grant in case we request an access token
    */
   scopes?: string | string[];
- /**
-   * This attribute sets the DOM ID of the container element. If it's not set, the One Tap prompt is displayed in the top-right corner of the window.
-   */
-  promptParentID?: string;
 
   /**
    * Optional, defaults to 'select_account'.
@@ -149,7 +145,6 @@ export class GoogleLoginProvider extends BaseLoginProvider {
                 const socialUser = this.createSocialUser(credential);
                 this._socialUser.next(socialUser);
               },
-              prompt_parent_id: this.initOptions.promptParentID,
               itp_support: this.initOptions.oneTapEnabled,
               ux_mode: this.initOptions.uxMode || 'popup',
               context: this.initOptions.context || 'use',
@@ -165,7 +160,7 @@ export class GoogleLoginProvider extends BaseLoginProvider {
             if (this.initOptions.oneTapEnabled) {
               this._socialUser
                 .pipe(filter((user) => user === null))
-                .subscribe(() => google.accounts.id.prompt(console.debug));
+                .subscribe(() => google.accounts.id.prompt());
             }
 
             if (this.initOptions.scopes) {

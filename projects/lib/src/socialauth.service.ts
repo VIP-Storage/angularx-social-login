@@ -57,6 +57,8 @@ export class SocialAuthService {
 
   /**
    * @param config A `SocialAuthServiceConfig` object or a `Promise` that resolves to a `SocialAuthServiceConfig` object
+   * @param _ngZone
+   * @param _injector
    */
   constructor(
     @Inject('SocialAuthServiceConfig')
