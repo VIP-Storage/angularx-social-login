@@ -270,6 +270,10 @@ export class GoogleLoginProvider extends BaseLoginProvider {
     );
   }
 
+  dismissPrompt() {
+    return google.accounts.id.cancel();
+  }
+
   async signOut(): Promise<void> {
     google.accounts.id.disableAutoSelect();
     this._socialUser.next(null);

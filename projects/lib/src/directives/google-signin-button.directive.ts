@@ -44,7 +44,7 @@ export class GoogleSigninButtonDirective {
             type: this.type,
             size: this.size,
             text: this.text,
-            width: parseInt(this.width),
+            width: parseInt(`${this.width}`),
             shape: this.shape,
             theme: this.theme,
             logo_alignment: this.logo_alignment,

@@ -47,6 +47,8 @@ export class DemoComponent implements OnInit {
   }
 
   refreshGoogleToken(): void {
-    this._authService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID);
+    this._authService.refreshAuthToken(GoogleLoginProvider.PROVIDER_ID).then(() => {
+      this._authService.dismissAuthPrompt(GoogleLoginProvider.PROVIDER_ID);
+    });
   }
 }

@@ -32,6 +32,8 @@ export class SocialAuthService {
     'Chosen login provider is not supported for refreshing a token';
   private static readonly ERR_NOT_SUPPORTED_FOR_ACCESS_TOKEN =
     'Chosen login provider is not supported for getting an access token';
+  private static readonly ERR_NOT_SUPPORTED_FOR_DISMISSING_PROMPT =
+    'Chosen login provider is not supported for dismissing a prompt';
 
   private providers: Map<string, LoginProvider> = new Map();
   private autoLogin = false;
@@ -143,6 +145,35 @@ export class SocialAuthService {
     }
 
     return await providerObject.getAccessToken();
+  }
+
+
+  /**
+   * Dismisses the authentication prompt for a specific provider.
+   *
+   * @param {string} providerId - The ID of the provider.
+   * @return {Promise} - A Promise that resolves if the prompt is successfully dismissed, and rejects with an error if it fails.
+   *
+   * @throws {ERR_NOT_INITIALIZED} - If the SocialAuthService is not initialized.
+   * @throws {ERR_NOT_SUPPORTED_FOR_DISMISSING_PROMPT} - If the provider is not supported for dismissing the prompt.
+   * @throws {ERR_LOGIN_PROVIDER_NOT_FOUND} - If the login provider is not found.
+   */
+  dismissAuthPrompt(providerId: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (!this.initialized) {
+        reject(SocialAuthService.ERR_NOT_INITIALIZED);
+      } else if (providerId !== GoogleLoginProvider.PROVIDER_ID) {
+        reject(SocialAuthService.ERR_NOT_SUPPORTED_FOR_DISMISSING_PROMPT);
+      } else {
+        const providerObject = this.providers.get(providerId);
+        if (providerObject instanceof GoogleLoginProvider) {
+          providerObject.dismissPrompt();
+          resolve()
+        } else {
+          reject(SocialAuthService.ERR_LOGIN_PROVIDER_NOT_FOUND);
+        }
+      }
+    });
   }
 
   refreshAuthToken(providerId: string): Promise<void> {
