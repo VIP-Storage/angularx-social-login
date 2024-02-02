@@ -275,6 +275,14 @@ export class GoogleLoginProvider extends BaseLoginProvider {
     )
   }
 
+  setSocialUser(user: SocialUser | string) {
+    if (typeof user === 'string') {
+      const socialUser = this.createSocialUser(user);
+      this._socialUser.next(socialUser);
+    } else
+      this._socialUser.next(user);
+  }
+
   async signOut(): Promise<void> {
     google.accounts.id.disableAutoSelect();
     this._socialUser.next(null);

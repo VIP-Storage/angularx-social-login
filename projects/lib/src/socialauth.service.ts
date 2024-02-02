@@ -103,7 +103,7 @@ export class SocialAuthService {
             loginStatusPromises.push(promise);
             promise
               .then((user: SocialUser) => {
-                this.setUser(user, key);
+                this._setUser(user, key);
                 loggedIn = true;
               })
               .catch(console.debug);
@@ -120,7 +120,7 @@ export class SocialAuthService {
           if (isObservable(provider.changeUser)) {
             provider.changeUser.subscribe((user) => {
               this._ngZone.run(() => {
-                this.setUser(user, key);
+                this._setUser(user, key);
               });
             });
           }
@@ -190,7 +190,7 @@ export class SocialAuthService {
             providerObject
               .refreshToken()
               .then((user) => {
-                this.setUser(user, providerId);
+                this._setUser(user, providerId);
                 resolve();
               })
               .catch((err) => {
@@ -253,7 +253,7 @@ export class SocialAuthService {
           providerObject
             .signIn(signInOptions)
             .then((user: SocialUser) => {
-              this.setUser(user, providerId);
+              this._setUser(user, providerId);
               resolve(user);
             })
             .catch((err) => {
@@ -286,7 +286,7 @@ export class SocialAuthService {
             .signOut(revoke)
             .then(() => {
               resolve();
-              this.setUser(null);
+              this._setUser(null);
             })
             .catch((err) => {
               reject(err);
@@ -298,7 +298,35 @@ export class SocialAuthService {
     });
   }
 
-  private setUser(user: SocialUser | null, id?: string) {
+  /**
+   * Manually set the SocialUser which is useful if you're managing tokens outside of this library
+   * Warning: only implemented for Google right now
+   *
+   * @param user SocialUser or ID token
+   * @returns A `Promise` that resolves if the operation is successful, rejects otherwise
+   */
+  setUser(user: SocialUser | string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      if (!this.initialized) {
+        reject(SocialAuthService.ERR_NOT_INITIALIZED);
+      } else if (!this._user) {
+        reject(SocialAuthService.ERR_NOT_LOGGED_IN);
+      } else {
+        let providerId = this._user.provider;
+        let providerObject = this.providers.get(providerId);
+        if (providerObject instanceof GoogleLoginProvider) {
+          providerObject.setSocialUser(user);
+          resolve();
+        } else {
+          reject(SocialAuthService.ERR_LOGIN_PROVIDER_NOT_FOUND);
+        }
+
+      }
+    });
+  }
+
+
+  private _setUser(user: SocialUser | null, id?: string) {
     if (user && id) user.provider = id;
     this._user = user;
     this._authState.next(user);

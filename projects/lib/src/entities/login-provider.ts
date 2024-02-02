@@ -8,4 +8,5 @@ export interface LoginProvider {
   signIn(signInOptions?: object): Promise<SocialUser>;
   signOut(revoke?: boolean): Promise<void>;
   refreshToken?(): Promise<SocialUser | null>;
+  setSocialUser?(user: SocialUser | string): void;
 }
