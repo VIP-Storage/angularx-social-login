@@ -307,11 +307,6 @@ export class SocialAuthService {
    */
   setUser(user: SocialUser | string): Promise<void> {
     return new Promise((resolve, reject) => {
-      if (!this.initialized) {
-        reject(SocialAuthService.ERR_NOT_INITIALIZED);
-      } else if (!this._user) {
-        reject(SocialAuthService.ERR_NOT_LOGGED_IN);
-      } else {
         let providerId = this._user.provider;
         let providerObject = this.providers.get(providerId);
         if (providerObject instanceof GoogleLoginProvider) {
@@ -320,8 +315,6 @@ export class SocialAuthService {
         } else {
           reject(SocialAuthService.ERR_LOGIN_PROVIDER_NOT_FOUND);
         }
-
-      }
     });
   }
 
